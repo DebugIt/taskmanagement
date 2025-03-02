@@ -21,7 +21,7 @@ const Dashboard = () => {
   const [taskname, setTaskname] = useState("")
   const [taskdescription, setTaskdescription] = useState("")
   const [taskstatus, setTaskStatus] = useState("Pending")
-  const [duedate, setDuedate] = useState("")
+  const [duedate, setDuedate] = useState(new Date().toISOString().split('T')[0]);
   const [tasks, setTasks] = useState([])
   const [status, setstatus] = useState("")
 

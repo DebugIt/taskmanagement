@@ -13,7 +13,10 @@ const Modal = ({ task, fetchTasks, setEdit }) => {
     const [taskname, setTaskname] = useState(task.taskname || "")
     const [taskdescription, setTaskdescription] = useState(task.taskdescription || "")
     const [taskstatus, setTaskStatus] = useState(task.taskstatus || "Pending")
-    const [duedate, setDuedate] = useState(task.duedate || "")
+    const [duedate, setDuedate] = useState(
+        task.duedate ? task.duedate.split('T')[0] : new Date().toISOString().split('T')[0]
+      );
+          
 
     const [loading, setLoading] = useState(false)
 
@@ -45,8 +48,8 @@ const Modal = ({ task, fetchTasks, setEdit }) => {
 
   return (
     <>
-        <div id="container" className='bg-black bg-opacity-50 flex justify-center items-center absolute h-full w-full top-0 left-0'>
-            <div id="inner-container" className={` bg-white p-3 rounded-lg w-[95%] md:max-w-[40%] z-10 `}>
+        <div id="container" className={` bg-black bg-opacity-50 flex justify-center items-center absolute h-full w-full top-0 left-0`}>
+            <div id="inner-container" className={` ${theme === "dark" ? "bg-dark_secondary" : "bg-white"} p-3 rounded-lg w-[95%] md:max-w-[40%] z-10 `}>
                 <div className='flex justify-between items-center'>
                     <p>Update Details:</p>
                     <MdClose size={20} onClick={() => setEdit(false)}/>
