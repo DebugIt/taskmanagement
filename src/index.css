@@ -1,13 +1,15 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    font-family: "Funnel Display";
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.form-fields{
+    @apply w-full p-2 py-3 select-none border outline-none rounded-lg focus:border-black focus:border-2 transition-all 
+}
+
+.form-field-dark{
+    @apply w-full p-2 py-3 select-none border border-gray-50 outline-none rounded-lg focus:border-gray-400 focus:border-2 transition-all bg-dark_secondary
 }
