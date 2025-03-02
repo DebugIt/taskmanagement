@@ -31,13 +31,25 @@ const Login = () => {
   const handleLogin = async (values) => {
     setLoading(true);
     try {
-      const response = await axios.post(`${URL}user/${formtype === "login" ? "login" : "create"}`, values);
+      const response = await axios.post(`${URL}user/login`, values);
       toast.success(response?.data?.message);
-      {
-        formtype === "login" && localStorage.setItem("isLoggedIn", true); Cookies.set("token", response?.data?.data, {
-          expires: 1,
-        }); navigate("/dashboard")
-      }
+      localStorage.setItem("isLoggedIn", true); 
+      Cookies.set("token", response?.data?.data, {expires: 1,}); 
+      navigate("/dashboard")
+    } catch (error) {
+      console.log(error)
+      toast.error(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleSignup = async (values) => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${URL}user/create`, values);
+      toast.success(response?.data?.message);
+      setFormType("login")
     } catch (error) {
       console.log(error)
       toast.error(error?.response?.data?.message);
@@ -69,7 +81,7 @@ const Login = () => {
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
-            onSubmit={handleLogin}
+            onSubmit={formtype === "login" ? handleLogin : handleSignup}
           >
             <Form className='space-y-2'>
               <div id="email">

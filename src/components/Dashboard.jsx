@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import UserContext from '../context/UserContext'
-import { CiDark, CiLight } from 'react-icons/ci'
+import { CiDark, CiLight, CiLogout } from 'react-icons/ci'
 import InputField from './InputField'
 import TaskCard from "./TaskCard"
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import Cookies from "js-cookie"
 import { ClipLoader } from "react-spinners"
+import { useNavigate } from 'react-router-dom'
+
 
 const Dashboard = () => {
 
@@ -23,9 +25,13 @@ const Dashboard = () => {
   const [tasks, setTasks] = useState([])
   const [status, setstatus] = useState("")
 
+  const [noTaskToastShown, setNoTaskToastShown] = useState(false);
+
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const limit = 10
+
+  const navigate = useNavigate()
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -40,6 +46,7 @@ const Dashboard = () => {
         setTasks(response?.data?.data?.tasks || []);
         setTotalPages(response?.data?.data?.totalPages || 1)
         setOpenOthermenu(false)
+        setNoTaskToastShown(false)
     } catch (error) {
         if(error?.response?.data?.status === 403 || error?.response?.data?.status === 401){
             Cookies.remove("token")
@@ -47,7 +54,8 @@ const Dashboard = () => {
             window.location.href = "/"
         }
         else if (error.response?.data?.status === 404){
-            toast.error("No tasks found")
+            // toast.error("No tasks found")
+            setNoTaskToastShown(true)
         }
         else{
             toast.error(error?.response?.data?.message)
@@ -106,10 +114,15 @@ const Dashboard = () => {
         <div id="container" className={` h-screen overflow-auto scrollbar-hide `}>
             <div id="heading" className={` m-4 flex justify-between items-center text-2xl ${theme === "dark" ? "text-gray-50" : ""} `}>
                 <h1>Sprintly</h1>
-                <div id="button" onClick={() => {theme === "light" ? setTheme("dark") : setTheme("light")}} className={` border rounded-lg p-1 border-gray-200 cursor-pointer hover:scale-110 transition-all `}>
-                  {
-                    theme === "light" ? <CiDark className='text-lg' /> : <CiLight className='text-lg'/>
-                  }
+                <div className='flex justify-center items-center gap-1'>
+                    <div id="button" onClick={() => {theme === "light" ? setTheme("dark") : setTheme("light")}} className={` border rounded-lg p-1 border-gray-200 cursor-pointer hover:scale-110 transition-all `}>
+                    {
+                        theme === "light" ? <CiDark className='text-lg' /> : <CiLight className='text-lg'/>
+                    }
+                    </div>
+                    <div id="button" onClick={() => {Cookies.remove("token"); navigate("/")}} className={` border rounded-lg p-1 border-gray-200 cursor-pointer hover:scale-110 transition-all `}>
+                        <CiLogout className='text-lg'/>
+                    </div>
                 </div>
             </div>
             <div id="creation" onClick={() => setOpenOthermenu(!openOthermenu)} className={` flex justify-center items-center m-4`}>
@@ -170,7 +183,7 @@ const Dashboard = () => {
                             }
                         </>
                     ) : (
-                        <p className={` ${theme === "dark" ? "text-gray-200" : ""} `}>No Tasks found, add a new one :)</p>
+                        !loading && <p className={` ${theme === "dark" ? "text-gray-200" : ""} `}>No Tasks found, add a new one :)</p>
                     )
                 }
             </div>
